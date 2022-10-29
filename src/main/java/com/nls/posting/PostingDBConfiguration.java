@@ -205,7 +205,9 @@ public class PostingDBConfiguration extends Application {
       overrides.put(
           "testConnectionOnCheckout",
           configProperties.getValue("CMDBTestConnectionOnCheckout", Boolean.class));
-      overrides.put("checkoutTimeout", 5000);
+      overrides.put(
+          "checkoutTimeout", configProperties.getValue("CMDBCheckoutTimeout", Integer.class));
+      // overrides.put("checkoutTimeout", 5000);
       cmDBPool = (PooledDataSource) DataSources.pooledDataSource(unpooled, overrides);
 
       Connection dbConnection = null;

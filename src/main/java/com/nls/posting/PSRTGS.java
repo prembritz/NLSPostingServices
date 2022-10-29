@@ -80,7 +80,7 @@ public class PSRTGS {
     PSRTGS.channelDBSchema = channelDBSchema;
   }
 
-  @Timeout(value = 5, unit = ChronoUnit.SECONDS)
+  @Timeout(value = 3, unit = ChronoUnit.SECONDS)
   @Counted()
   @Traced()
   @POST
