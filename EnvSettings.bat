@@ -8,6 +8,7 @@ set CMDBValidationQuery= "select systimestamp from dual"
 set CMDBTestConnectionOnCheckout=false
 set CoreDBSChema=ncbadb
 set ChannelDBSchema=ncbacib
+set CMDBCheckoutTimeout=5000
 set CORE_SERVICES_MP_REST_URL=http://localhost:8081
 set BATCH_CORE_SERVICES_MP_REST_URL=http://localhost:8080
 #set PESLINK_CORE_SERVICES_MP_REST_URL=http://192.168.90.101:1700

@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ForkJoinPool;
 import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
@@ -726,20 +727,40 @@ public class CbftBatchCallBack {
         } catch (Exception except) {
           except.printStackTrace();
         } finally {
-          RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(UniqueReference));
-          System.out.println(
-              "["
-                  + UniqueReference
-                  + "] Releasing Account Lock Status ["
-                  + RelLocks.getStatus()
-                  + "]");
-          RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(SourceUniqRef));
-          System.out.println(
-              "["
-                  + SourceUniqRef
-                  + "] Releasing Transaction Lock Status ["
-                  + RelLocks.getStatus()
-                  + "]");
+
+          coreServices
+              .ReleaseLock(new ReleaseLockRequest(UniqueReference))
+              .whenCompleteAsync(
+                  ((ReleaseLockObject, exception) -> {
+                    if (exception != null) {
+                      exception.printStackTrace();
+                    } else {
+                      System.out.println(
+                          "["
+                              + ReleaseLockObject.getUniqueReference()
+                              + "] Releasing Account Lock Status ["
+                              + ReleaseLockObject.getStatus()
+                              + "]");
+                    }
+                  }),
+                  ForkJoinPool.commonPool());
+
+          coreServices
+              .ReleaseLock(new ReleaseLockRequest(SourceUniqRef))
+              .whenCompleteAsync(
+                  ((ReleaseLockObject, exception) -> {
+                    if (exception != null) {
+                      exception.printStackTrace();
+                    } else {
+                      System.out.println(
+                          "["
+                              + ReleaseLockObject.getUniqueReference()
+                              + "] Releasing Transaction Lock Status ["
+                              + ReleaseLockObject.getStatus()
+                              + "]");
+                    }
+                  }),
+                  ForkJoinPool.commonPool());
         }
       }
       return Response.status(Status.ACCEPTED).entity(CBObj).build();

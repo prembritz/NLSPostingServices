@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ForkJoinPool;
 import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
@@ -99,7 +100,7 @@ public class CreditCardRepayment {
           CreditCardRepaymentRequest id) {
 
     CreditCardRepaymentObject CCRObj = new CreditCardRepaymentObject();
-    ReleaseLockObject RelLocks = null;
+    // ReleaseLockObject RelLocks = null;
     LockTrasactionObject Locking = null;
     LinkedHashMap<String, String> OFSData = null;
     LinkedHashMap<String, String> FiancialDetailsMap = null;
@@ -157,12 +158,13 @@ public class CreditCardRepayment {
             CCRObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.UNIQUE_REFERENCE_GENERATED_FAILED.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(CCRObj).build();
       }
 
@@ -207,7 +209,8 @@ public class CreditCardRepayment {
               UnitId,
               ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue(),
               TransId,
-              VIPErrorDesc);
+              VIPErrorDesc,
+              ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue());
           return Response.status(Status.ACCEPTED).entity(CCRObj).build();
         }
       } catch (Exception e) {
@@ -217,12 +220,13 @@ public class CreditCardRepayment {
             CCRObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.LOCKING_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(CCRObj).build();
       }
 
@@ -248,7 +252,8 @@ public class CreditCardRepayment {
                 UnitId,
                 ResponseStatus.DUPLICATE_DATA.getValue(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ResponseStatus.DUPLICATE_DATA.getValue());
             return Response.status(Status.ACCEPTED).entity(CCRObj).build();
           }
         }
@@ -259,12 +264,13 @@ public class CreditCardRepayment {
             CCRObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATION_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(CCRObj).build();
       }
       // Custom validation
@@ -319,7 +325,8 @@ public class CreditCardRepayment {
                 UnitId,
                 ValFinTrans.getErrorDetail(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ValFinTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(CCRObj).build();
           }
         }
@@ -330,12 +337,13 @@ public class CreditCardRepayment {
             CCRObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATING_FINANCIAL_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(CCRObj).build();
       }
 
@@ -385,7 +393,8 @@ public class CreditCardRepayment {
                 UnitId,
                 ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue());
             return Response.status(Status.ACCEPTED).entity(CCRObj).build();
           }
         }
@@ -396,12 +405,13 @@ public class CreditCardRepayment {
             CCRObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.OFS_FORMATTING_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(CCRObj).build();
       }
 
@@ -435,7 +445,8 @@ public class CreditCardRepayment {
                 UnitId,
                 QueuedTrans.getErrorDetail(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                QueuedTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(CCRObj).build();
           }
         }
@@ -446,12 +457,13 @@ public class CreditCardRepayment {
             CCRObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.QUEUING_TRANSACTIONS_FAILED.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(CCRObj).build();
       }
 
@@ -480,7 +492,8 @@ public class CreditCardRepayment {
               UnitId,
               ErrorMessage,
               TransId,
-              VIPErrorDesc);
+              VIPErrorDesc,
+              ErrorMessage);
 
           OFSData.remove("UniqueReference");
           OFSData.remove("FTReference");
@@ -534,12 +547,13 @@ public class CreditCardRepayment {
             CCRObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.TRANSACTION_DETAIL_LOGGING_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(CCRObj).build();
       }
 
@@ -549,16 +563,40 @@ public class CreditCardRepayment {
       except.printStackTrace();
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     } finally {
-      RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(UniqueReference));
-      System.out.println(
-          "[" + UniqueReference + "] Releasing Account Lock Status [" + RelLocks.getStatus() + "]");
-      RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(SourceUniqRef));
-      System.out.println(
-          "["
-              + SourceUniqRef
-              + "] Releasing Transaction Lock Status ["
-              + RelLocks.getStatus()
-              + "]");
+
+      coreServices
+          .ReleaseLock(new ReleaseLockRequest(UniqueReference))
+          .whenCompleteAsync(
+              ((ReleaseLockObject, exception) -> {
+                if (exception != null) {
+                  exception.printStackTrace();
+                } else {
+                  System.out.println(
+                      "["
+                          + ReleaseLockObject.getUniqueReference()
+                          + "] Releasing Account Lock Status ["
+                          + ReleaseLockObject.getStatus()
+                          + "]");
+                }
+              }),
+              ForkJoinPool.commonPool());
+
+      coreServices
+          .ReleaseLock(new ReleaseLockRequest(SourceUniqRef))
+          .whenCompleteAsync(
+              ((ReleaseLockObject, exception) -> {
+                if (exception != null) {
+                  exception.printStackTrace();
+                } else {
+                  System.out.println(
+                      "["
+                          + ReleaseLockObject.getUniqueReference()
+                          + "] Releasing Transaction Lock Status ["
+                          + ReleaseLockObject.getStatus()
+                          + "]");
+                }
+              }),
+              ForkJoinPool.commonPool());
 
       LocalDateTime endTime = LocalDateTime.now();
       long millis = ChronoUnit.MILLIS.between(startTime, endTime);
@@ -578,7 +616,8 @@ public class CreditCardRepayment {
       String UnitId,
       String ErrorDescription,
       String TransID,
-      String ResDescription) {
+      String ResDescription,
+      String TimedoutMessage) {
 
     CCRObj.setHdrTranId(TransID);
     // CCRObj.setHdrRefNo(UniqueReference);
@@ -588,7 +627,7 @@ public class CreditCardRepayment {
     CCRObj.setResStatusCode(ErrorCode);
     CCRObj.setResStatusDescription(ErrorDescription);
     CCRObj.setResErrorCode(ErrorCode);
-    CCRObj.setResErrorMessage(ErrorDescription);
+    CCRObj.setResErrorMessage(TimedoutMessage);
     CCRObj.setResCoreReferenceNo(CBXReference);
     CCRObj.setResDescription(ResDescription);
   }

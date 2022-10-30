@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ForkJoinPool;
 import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
@@ -102,7 +103,7 @@ public class KEPesalinkTransfer {
           KEPesalinkRequest id) {
 
     KEPesalinkObject PesaLinkObj = new KEPesalinkObject();
-    ReleaseLockObject RelLocks = null;
+    //  ReleaseLockObject RelLocks = null;
     PesaLinkCoreObject LoopAccCoreObj = null;
     LockTrasactionObject Locking = null;
     LinkedHashMap<String, String> OFSData = null;
@@ -169,12 +170,13 @@ public class KEPesalinkTransfer {
             PesaLinkObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.UNIQUE_REFERENCE_GENERATED_FAILED.getValue(),
-            TransId);
+            TransId,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
       }
 
@@ -218,7 +220,8 @@ public class KEPesalinkTransfer {
               CBXReference,
               UnitId,
               ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue(),
-              TransId);
+              TransId,
+              ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue());
           return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
         }
       } catch (Exception e) {
@@ -228,12 +231,13 @@ public class KEPesalinkTransfer {
             PesaLinkObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.LOCKING_TRANSACTION_UNSUCCESSFUL.getValue(),
-            TransId);
+            TransId,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
       }
 
@@ -258,7 +262,8 @@ public class KEPesalinkTransfer {
                 CBXReference,
                 UnitId,
                 ResponseStatus.DUPLICATE_DATA.getValue(),
-                TransId);
+                TransId,
+                ResponseStatus.DUPLICATE_DATA.getValue());
             return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
           }
         }
@@ -268,12 +273,13 @@ public class KEPesalinkTransfer {
             PesaLinkObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATION_TRANSACTION_UNSUCCESSFUL.getValue(),
-            TransId);
+            TransId,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
       }
       // Custom validation
@@ -331,7 +337,8 @@ public class KEPesalinkTransfer {
                 CBXReference,
                 UnitId,
                 ValFinTrans.getErrorDetail(),
-                TransId);
+                TransId,
+                ValFinTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
           }
         }
@@ -341,12 +348,13 @@ public class KEPesalinkTransfer {
             PesaLinkObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATING_FINANCIAL_TRANSACTION_UNSUCCESSFUL.getValue(),
-            TransId);
+            TransId,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
       }
 
@@ -395,7 +403,8 @@ public class KEPesalinkTransfer {
                 CBXReference,
                 UnitId,
                 ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue(),
-                TransId);
+                TransId,
+                ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue());
 
             return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
           }
@@ -406,12 +415,13 @@ public class KEPesalinkTransfer {
             PesaLinkObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.OFS_FORMATTING_UNSUCCESSFUL.getValue(),
-            TransId);
+            TransId,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
       }
 
@@ -444,7 +454,8 @@ public class KEPesalinkTransfer {
                 CBXReference,
                 UnitId,
                 QueuedTrans.getErrorDetail(),
-                TransId);
+                TransId,
+                QueuedTrans.getErrorDetail());
 
             return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
           }
@@ -455,12 +466,13 @@ public class KEPesalinkTransfer {
             PesaLinkObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.QUEUING_TRANSACTIONS_FAILED.getValue(),
-            TransId);
+            TransId,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
       }
 
@@ -489,7 +501,8 @@ public class KEPesalinkTransfer {
               CBXReference,
               UnitId,
               ErrorMessage,
-              TransId);
+              TransId,
+              ErrorMessage);
 
           OFSData.remove("UniqueReference");
           OFSData.remove("FTReference");
@@ -569,12 +582,13 @@ public class KEPesalinkTransfer {
             PesaLinkObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.TRANSACTION_DETAIL_LOGGING_UNSUCCESSFUL.getValue(),
-            TransId);
+            TransId,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(PesaLinkObj).build();
       }
 
@@ -584,20 +598,40 @@ public class KEPesalinkTransfer {
       except.printStackTrace();
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     } finally {
-      RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(UniqueReference));
-      System.out.println(
-          "["
-              + UniqueReference
-              + "] Releasing PesaLink Account Lock Status ["
-              + RelLocks.getStatus()
-              + "]");
-      RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(SourceUniqRef));
-      System.out.println(
-          "["
-              + SourceUniqRef
-              + "] Releasing PesaLink Transaction Lock Status ["
-              + RelLocks.getStatus()
-              + "]");
+
+      coreServices
+          .ReleaseLock(new ReleaseLockRequest(UniqueReference))
+          .whenCompleteAsync(
+              ((ReleaseLockObject, exception) -> {
+                if (exception != null) {
+                  exception.printStackTrace();
+                } else {
+                  System.out.println(
+                      "["
+                          + ReleaseLockObject.getUniqueReference()
+                          + "] Releasing Account Lock Status ["
+                          + ReleaseLockObject.getStatus()
+                          + "]");
+                }
+              }),
+              ForkJoinPool.commonPool());
+
+      coreServices
+          .ReleaseLock(new ReleaseLockRequest(SourceUniqRef))
+          .whenCompleteAsync(
+              ((ReleaseLockObject, exception) -> {
+                if (exception != null) {
+                  exception.printStackTrace();
+                } else {
+                  System.out.println(
+                      "["
+                          + ReleaseLockObject.getUniqueReference()
+                          + "] Releasing Transaction Lock Status ["
+                          + ReleaseLockObject.getStatus()
+                          + "]");
+                }
+              }),
+              ForkJoinPool.commonPool());
 
       LocalDateTime endTime = LocalDateTime.now();
       long millis = ChronoUnit.MILLIS.between(startTime, endTime);
@@ -617,7 +651,8 @@ public class KEPesalinkTransfer {
       String CBXReference,
       String UnitId,
       String ErrorDescription,
-      String TransId) {
+      String TransId,
+      String TimedoutMessage) {
 
     PesaLinkObj.setHdrTranId(TransId);
     // PesaLinkObj.setHdrRefNo(UniqueReference);
@@ -628,7 +663,7 @@ public class KEPesalinkTransfer {
     PesaLinkObj.setResStatusDescription(ErrorDescription);
     PesaLinkObj.setResErrorCode(ErrorCode);
     PesaLinkObj.setResErrorDesc(ErrorDesc);
-    PesaLinkObj.setResErrorMessage(ErrorDescription);
+    PesaLinkObj.setResErrorMessage(TimedoutMessage);
     PesaLinkObj.setResRequestID("");
     PesaLinkObj.setResCoreReferenceNo(CBXReference);
   }

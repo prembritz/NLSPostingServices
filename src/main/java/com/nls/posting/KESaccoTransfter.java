@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ForkJoinPool;
 import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
@@ -96,7 +97,7 @@ public class KESaccoTransfter {
           KeSaccoTransferRequest id) {
 
     KESaccoTransferObject saccoObj = new KESaccoTransferObject();
-    ReleaseLockObject RelLocks = null;
+    // ReleaseLockObject RelLocks = null;
     LockTrasactionObject Locking = null;
     LinkedHashMap<String, String> OFSData = null;
     LinkedHashMap<String, String> FiancialDetailsMap = null;
@@ -157,12 +158,13 @@ public class KESaccoTransfter {
             saccoObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.UNIQUE_REFERENCE_GENERATED_FAILED.getValue(),
-            transID);
+            transID,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(saccoObj).build();
       }
 
@@ -206,7 +208,8 @@ public class KESaccoTransfter {
               CBXReference,
               UnitId,
               ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue(),
-              transID);
+              transID,
+              ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue());
           return Response.status(Status.ACCEPTED).entity(saccoObj).build();
         }
       } catch (Exception e) {
@@ -216,12 +219,13 @@ public class KESaccoTransfter {
             saccoObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.LOCKING_TRANSACTION_UNSUCCESSFUL.getValue(),
-            transID);
+            transID,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(saccoObj).build();
       }
 
@@ -246,7 +250,8 @@ public class KESaccoTransfter {
                 CBXReference,
                 UnitId,
                 ResponseStatus.DUPLICATE_DATA.getValue(),
-                transID);
+                transID,
+                ResponseStatus.DUPLICATE_DATA.getValue());
             return Response.status(Status.ACCEPTED).entity(saccoObj).build();
           }
         }
@@ -256,12 +261,13 @@ public class KESaccoTransfter {
             saccoObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATION_TRANSACTION_UNSUCCESSFUL.getValue(),
-            transID);
+            transID,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(saccoObj).build();
       }
 
@@ -327,7 +333,8 @@ public class KESaccoTransfter {
                 CBXReference,
                 UnitId,
                 ValFinTrans.getErrorDetail(),
-                transID);
+                transID,
+                ValFinTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(saccoObj).build();
           }
         }
@@ -337,12 +344,13 @@ public class KESaccoTransfter {
             saccoObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATING_FINANCIAL_TRANSACTION_UNSUCCESSFUL.getValue(),
-            transID);
+            transID,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(saccoObj).build();
       }
 
@@ -388,7 +396,8 @@ public class KESaccoTransfter {
                 CBXReference,
                 UnitId,
                 ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue(),
-                transID);
+                transID,
+                ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue());
 
             return Response.status(Status.ACCEPTED).entity(saccoObj).build();
           }
@@ -399,12 +408,13 @@ public class KESaccoTransfter {
             saccoObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.OFS_FORMATTING_UNSUCCESSFUL.getValue(),
-            transID);
+            transID,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(saccoObj).build();
       }
 
@@ -437,7 +447,8 @@ public class KESaccoTransfter {
                 CBXReference,
                 UnitId,
                 QueuedTrans.getErrorDetail(),
-                transID);
+                transID,
+                QueuedTrans.getErrorDetail());
 
             return Response.status(Status.ACCEPTED).entity(saccoObj).build();
           }
@@ -448,12 +459,13 @@ public class KESaccoTransfter {
             saccoObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.QUEUING_TRANSACTIONS_FAILED.getValue(),
-            transID);
+            transID,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(saccoObj).build();
       }
 
@@ -481,7 +493,8 @@ public class KESaccoTransfter {
               CBXReference,
               UnitId,
               ErrorMessage,
-              transID);
+              transID,
+              ErrorMessage);
 
           OFSData.remove("UniqueReference");
           OFSData.remove("FTReference");
@@ -536,12 +549,13 @@ public class KESaccoTransfter {
             saccoObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             VIPErrorDesc,
             CBXReference,
             UnitId,
             ResponseStatus.TRANSACTION_DETAIL_LOGGING_UNSUCCESSFUL.getValue(),
-            transID);
+            transID,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(saccoObj).build();
       }
 
@@ -551,20 +565,40 @@ public class KESaccoTransfter {
       except.printStackTrace();
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     } finally {
-      RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(UniqueReference));
-      System.out.println(
-          "["
-              + UniqueReference
-              + "] Releasing KESACCO Account Lock Status ["
-              + RelLocks.getStatus()
-              + "]");
-      RelLocks = coreServices.ReleaseLock(new ReleaseLockRequest(SourceUniqRef));
-      System.out.println(
-          "["
-              + UniqueReference
-              + "] Releasing KESACCO Transaction Lock Status ["
-              + RelLocks.getStatus()
-              + "]");
+
+      coreServices
+          .ReleaseLock(new ReleaseLockRequest(UniqueReference))
+          .whenCompleteAsync(
+              ((ReleaseLockObject, exception) -> {
+                if (exception != null) {
+                  exception.printStackTrace();
+                } else {
+                  System.out.println(
+                      "["
+                          + ReleaseLockObject.getUniqueReference()
+                          + "] Releasing Account Lock Status ["
+                          + ReleaseLockObject.getStatus()
+                          + "]");
+                }
+              }),
+              ForkJoinPool.commonPool());
+
+      coreServices
+          .ReleaseLock(new ReleaseLockRequest(SourceUniqRef))
+          .whenCompleteAsync(
+              ((ReleaseLockObject, exception) -> {
+                if (exception != null) {
+                  exception.printStackTrace();
+                } else {
+                  System.out.println(
+                      "["
+                          + ReleaseLockObject.getUniqueReference()
+                          + "] Releasing Transaction Lock Status ["
+                          + ReleaseLockObject.getStatus()
+                          + "]");
+                }
+              }),
+              ForkJoinPool.commonPool());
 
       LocalDateTime endTime = LocalDateTime.now();
       long millis = ChronoUnit.MILLIS.between(startTime, endTime);
@@ -584,7 +618,8 @@ public class KESaccoTransfter {
       String CBXReference,
       String UnitId,
       String ErrorDescription,
-      String transId) {
+      String transId,
+      String TimedoutMessage) {
 
     saccoObj.setHdrTranId(transId);
     // saccoObj.setHdrRefNo(UniqueReference);
@@ -595,7 +630,7 @@ public class KESaccoTransfter {
     saccoObj.setResStatusDescription(ErrorDescription);
     saccoObj.setResErrorCode(ErrorCode);
     saccoObj.setResErrorDesc(ErrorDesc);
-    saccoObj.setResErrorMessage(ErrorDescription);
+    saccoObj.setResErrorMessage(TimedoutMessage);
     saccoObj.setResRequestID("");
     saccoObj.setResCoreReferenceNo(CBXReference);
   }

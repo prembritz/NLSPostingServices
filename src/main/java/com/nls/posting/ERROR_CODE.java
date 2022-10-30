@@ -2,7 +2,8 @@ package com.nls.posting;
 
 public enum ERROR_CODE {
   SUCCESSFUL("000"),
-  NOT_FOUND("111");
+  NOT_FOUND("111"),
+  TIMED_OUT("222");
 
   private String value;
 
