@@ -102,7 +102,7 @@ public class StopChequePayment {
           StopChequePaymentRequest id) {
 
     StopChequePaymentObject stopCheque = new StopChequePaymentObject();
-    ReleaseLockObject RelLocks = null;
+    // ReleaseLockObject RelLocks = null;
     LockTrasactionObject Locking = null;
     LinkedHashMap<String, String> OFSData = null;
     LinkedHashMap<String, String> FiancialDetailsMap = null;
@@ -169,13 +169,14 @@ public class StopChequePayment {
             stopCheque,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.UNIQUE_REFERENCE_GENERATED_FAILED.getValue(),
             TransId,
             VIPErrorDesc,
-            message);
+            message,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(stopCheque).build();
       }
 
@@ -221,7 +222,8 @@ public class StopChequePayment {
               ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue(),
               TransId,
               VIPErrorDesc,
-              message);
+              message,
+              ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue());
           return Response.status(Status.ACCEPTED).entity(stopCheque).build();
         }
       } catch (Exception e) {
@@ -231,13 +233,14 @@ public class StopChequePayment {
             stopCheque,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.LOCKING_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
             VIPErrorDesc,
-            message);
+            message,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(stopCheque).build();
       }
 
@@ -264,7 +267,8 @@ public class StopChequePayment {
                 ResponseStatus.DUPLICATE_DATA.getValue(),
                 TransId,
                 VIPErrorDesc,
-                message);
+                message,
+                ResponseStatus.DUPLICATE_DATA.getValue());
             return Response.status(Status.ACCEPTED).entity(stopCheque).build();
           }
         }
@@ -275,13 +279,14 @@ public class StopChequePayment {
             stopCheque,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATION_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
             VIPErrorDesc,
-            message);
+            message,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(stopCheque).build();
       }
 
@@ -358,7 +363,8 @@ public class StopChequePayment {
               ResponseStatus.CUSTOM_VALIDATION_UNSUCCESSFUL.getValue(),
               TransId,
               VIPErrorDesc,
-              message);
+              message,
+              ResponseStatus.CUSTOM_VALIDATION_UNSUCCESSFUL.getValue());
           return Response.status(Status.ACCEPTED).entity(stopCheque).build();
         } else if (i < 0) {
           System.out.println("Account numbers is not found in given Cheque range!");
@@ -372,7 +378,8 @@ public class StopChequePayment {
               ResponseStatus.CUSTOM_VALIDATION_UNSUCCESSFUL.getValue(),
               TransId,
               VIPErrorDesc,
-              message);
+              message,
+              ResponseStatus.CUSTOM_VALIDATION_UNSUCCESSFUL.getValue());
           return Response.status(Status.ACCEPTED).entity(stopCheque).build();
         } else if (failedList.size() > 0) {
           for (int j = 0; j < failedList.size(); j++) {
@@ -392,7 +399,8 @@ public class StopChequePayment {
               ResponseStatus.FAILED.getValue(),
               TransId,
               VIPErrorDesc,
-              message);
+              message,
+              ResponseStatus.FAILED.getValue());
           return Response.status(Status.ACCEPTED).entity(stopCheque).build();
         }
       }
@@ -446,7 +454,8 @@ public class StopChequePayment {
                 ValFinTrans.getErrorDetail(),
                 TransId,
                 VIPErrorDesc,
-                message);
+                message,
+                ValFinTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(stopCheque).build();
           }
         }
@@ -457,13 +466,14 @@ public class StopChequePayment {
             stopCheque,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATING_FINANCIAL_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
             VIPErrorDesc,
-            message);
+            message,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(stopCheque).build();
       }
 
@@ -513,7 +523,8 @@ public class StopChequePayment {
                 ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue(),
                 TransId,
                 VIPErrorDesc,
-                message);
+                message,
+                ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue());
             return Response.status(Status.ACCEPTED).entity(stopCheque).build();
           }
         }
@@ -524,13 +535,14 @@ public class StopChequePayment {
             stopCheque,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.OFS_FORMATTING_UNSUCCESSFUL.getValue(),
             TransId,
             VIPErrorDesc,
-            message);
+            message,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(stopCheque).build();
       }
 
@@ -565,7 +577,8 @@ public class StopChequePayment {
                 QueuedTrans.getErrorDetail(),
                 TransId,
                 VIPErrorDesc,
-                message);
+                message,
+                QueuedTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(stopCheque).build();
           }
         }
@@ -576,13 +589,14 @@ public class StopChequePayment {
             stopCheque,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.QUEUING_TRANSACTIONS_FAILED.getValue(),
             TransId,
             VIPErrorDesc,
-            message);
+            message,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(stopCheque).build();
       }
 
@@ -610,7 +624,8 @@ public class StopChequePayment {
               ErrorMessage,
               TransId,
               VIPErrorDesc,
-              message);
+              message,
+              ErrorMessage);
 
           OFSData.remove("UniqueReference");
           OFSData.remove("FTReference");
@@ -661,13 +676,14 @@ public class StopChequePayment {
             stopCheque,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.TRANSACTION_DETAIL_LOGGING_UNSUCCESSFUL.getValue(),
             TransId,
             VIPErrorDesc,
-            message);
+            message,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(stopCheque).build();
       }
 
@@ -731,7 +747,8 @@ public class StopChequePayment {
       String ErrorDescription,
       String TransId,
       String ResDescription,
-      String message) {
+      String message,
+      String TimedoutMessage) {
 
     stopCheque.setHdrTranId(TransId);
     // stopCheque.setHdrRefNo(UniqueReference);
@@ -741,7 +758,7 @@ public class StopChequePayment {
     stopCheque.setResStatusCode(ErrorCode);
     stopCheque.setResStatusDescription(ErrorDescription);
     stopCheque.setResErrorCode(ErrorCode);
-    stopCheque.setResErrorMessage(ErrorDescription);
+    stopCheque.setResErrorMessage(TimedoutMessage);
     stopCheque.setResCoreReferenceNo(CBXReference);
     stopCheque.setResDescription(ResDescription);
     stopCheque.setChequeRanges(message);

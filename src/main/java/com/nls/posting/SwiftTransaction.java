@@ -99,7 +99,7 @@ public class SwiftTransaction {
           SwiftTransactionRequest id) {
 
     SwiftTransactionObject SwiftTransObj = new SwiftTransactionObject();
-    ReleaseLockObject RelLocks = null;
+    //  ReleaseLockObject RelLocks = null;
     LockTrasactionObject Locking = null;
     LinkedHashMap<String, String> OFSData = null;
     LinkedHashMap<String, String> FiancialDetailsMap = null;
@@ -160,12 +160,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.UNIQUE_REFERENCE_GENERATED_FAILED.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -210,7 +211,8 @@ public class SwiftTransaction {
               UnitId,
               ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue(),
               TransId,
-              VIPErrorDesc);
+              VIPErrorDesc,
+              ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue());
           return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
         }
       } catch (Exception e) {
@@ -220,12 +222,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.LOCKING_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -251,7 +254,8 @@ public class SwiftTransaction {
                 UnitId,
                 ResponseStatus.DUPLICATE_DATA.getValue(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ResponseStatus.DUPLICATE_DATA.getValue());
             return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
           }
         }
@@ -262,12 +266,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATION_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -303,7 +308,8 @@ public class SwiftTransaction {
               UnitId,
               ResponseStatus.BIC_NOT_FOUND.getValue(),
               TransId,
-              VIPErrorDesc);
+              VIPErrorDesc,
+              ResponseStatus.BIC_NOT_FOUND.getValue());
           return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
           /*
            * } SortCodeRS.close(); SortCodePS.close();
@@ -332,12 +338,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.CUSTOM_VALIDATION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -391,7 +398,8 @@ public class SwiftTransaction {
                 UnitId,
                 ValFinTrans.getErrorDetail(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ValFinTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
           }
         }
@@ -402,12 +410,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATING_FINANCIAL_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -457,7 +466,8 @@ public class SwiftTransaction {
                 UnitId,
                 ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue());
             return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
           }
         }
@@ -468,12 +478,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.OFS_FORMATTING_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -507,7 +518,8 @@ public class SwiftTransaction {
                 UnitId,
                 QueuedTrans.getErrorDetail(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                QueuedTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
           }
         }
@@ -518,12 +530,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.QUEUING_TRANSACTIONS_FAILED.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -552,7 +565,8 @@ public class SwiftTransaction {
               UnitId,
               ErrorMessage,
               TransId,
-              VIPErrorDesc);
+              VIPErrorDesc,
+              ErrorMessage);
 
           OFSData.remove("UniqueReference");
           OFSData.remove("FTReference");
@@ -603,12 +617,13 @@ public class SwiftTransaction {
             SwiftTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.TRANSACTION_DETAIL_LOGGING_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(SwiftTransObj).build();
       }
 
@@ -671,7 +686,8 @@ public class SwiftTransaction {
       String UnitId,
       String ErrorDescription,
       String TransId,
-      String ResDescription) {
+      String ResDescription,
+      String TimedoutMessage) {
 
     SwiftTransObj.setHdrTranId(TransId);
     // SwiftTransObj.setHdrRefNo(UniqueReference);
@@ -681,7 +697,7 @@ public class SwiftTransaction {
     SwiftTransObj.setResStatusCode(ErrorCode);
     SwiftTransObj.setResStatusDescription(ErrorDescription);
     SwiftTransObj.setResErrorCode(ErrorCode);
-    SwiftTransObj.setResErrorMessage(ErrorDescription);
+    SwiftTransObj.setResErrorMessage(TimedoutMessage);
     SwiftTransObj.setResCoreReferenceNo(CBXReference);
     SwiftTransObj.setResDescription(ResDescription);
   }

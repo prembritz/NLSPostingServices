@@ -98,7 +98,7 @@ public class TaxTransaction {
           TaxTransactionRequest id) {
 
     TaxTransactionObject TaxTransObj = new TaxTransactionObject();
-    ReleaseLockObject RelLocks = null;
+    // ReleaseLockObject RelLocks = null;
     LockTrasactionObject Locking = null;
     LinkedHashMap<String, String> OFSData = null;
     LinkedHashMap<String, String> FiancialDetailsMap = null;
@@ -157,12 +157,13 @@ public class TaxTransaction {
             TaxTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.UNIQUE_REFERENCE_GENERATED_FAILED.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
       }
 
@@ -207,7 +208,8 @@ public class TaxTransaction {
               UnitId,
               ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue(),
               TransId,
-              VIPErrorDesc);
+              VIPErrorDesc,
+              ResponseStatus.TRANSACTION_ALREADY_LOCKED.getValue());
           return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
         }
       } catch (Exception e) {
@@ -217,12 +219,13 @@ public class TaxTransaction {
             TaxTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.LOCKING_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
       }
 
@@ -248,7 +251,8 @@ public class TaxTransaction {
                 UnitId,
                 ResponseStatus.DUPLICATE_DATA.getValue(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ResponseStatus.DUPLICATE_DATA.getValue());
             return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
           }
         }
@@ -259,12 +263,13 @@ public class TaxTransaction {
             TaxTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATION_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
       }
       // Custom validation
@@ -319,7 +324,8 @@ public class TaxTransaction {
                 UnitId,
                 ValFinTrans.getErrorDetail(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ValFinTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
           }
         }
@@ -330,12 +336,13 @@ public class TaxTransaction {
             TaxTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.VALIDATING_FINANCIAL_TRANSACTION_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
       }
 
@@ -385,7 +392,8 @@ public class TaxTransaction {
                 UnitId,
                 ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                ResponseStatus.SERVICE_MAPPING_NOT_FOUND.getValue());
             return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
           }
         }
@@ -396,12 +404,13 @@ public class TaxTransaction {
             TaxTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.OFS_FORMATTING_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
       }
 
@@ -435,7 +444,8 @@ public class TaxTransaction {
                 UnitId,
                 QueuedTrans.getErrorDetail(),
                 TransId,
-                VIPErrorDesc);
+                VIPErrorDesc,
+                QueuedTrans.getErrorDetail());
             return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
           }
         }
@@ -446,12 +456,13 @@ public class TaxTransaction {
             TaxTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.QUEUING_TRANSACTIONS_FAILED.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
       }
 
@@ -480,7 +491,8 @@ public class TaxTransaction {
               UnitId,
               ErrorMessage,
               TransId,
-              VIPErrorDesc);
+              VIPErrorDesc,
+              ErrorMessage);
 
           OFSData.remove("UniqueReference");
           OFSData.remove("FTReference");
@@ -534,12 +546,13 @@ public class TaxTransaction {
             TaxTransObj,
             SourceUniqRef,
             UniqueReference,
-            ERROR_CODE.NOT_FOUND,
+            ERROR_CODE.TIMED_OUT,
             CBXReference,
             UnitId,
             ResponseStatus.TRANSACTION_DETAIL_LOGGING_UNSUCCESSFUL.getValue(),
             TransId,
-            VIPErrorDesc);
+            VIPErrorDesc,
+            ResponseStatus.TIMED_OUT.getValue());
         return Response.status(Status.ACCEPTED).entity(TaxTransObj).build();
       }
 
@@ -602,7 +615,8 @@ public class TaxTransaction {
       String UnitId,
       String ErrorDescription,
       String TransId,
-      String ResDescription) {
+      String ResDescription,
+      String TimedoutMessage) {
 
     TaxTransObj.setHdrTranId(TransId);
     // TaxTransObj.setHdrRefNo(UniqueReference);
@@ -612,7 +626,7 @@ public class TaxTransaction {
     TaxTransObj.setResStatusCode(ErrorCode);
     TaxTransObj.setResStatusDescription(ErrorDescription);
     TaxTransObj.setResErrorCode(ErrorCode);
-    TaxTransObj.setResErrorMessage(ErrorDescription);
+    TaxTransObj.setResErrorMessage(TimedoutMessage);
     TaxTransObj.setResCoreReferenceNo(CBXReference);
     TaxTransObj.setResDescription(ResDescription);
   }
