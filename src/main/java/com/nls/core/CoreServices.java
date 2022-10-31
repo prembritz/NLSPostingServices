@@ -17,7 +17,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface CoreServices extends Closeable {
   @POST
   @Traced
-  @Timeout(value = 500, unit = ChronoUnit.MILLIS)
+ // @Timeout(value=2000, unit = ChronoUnit.MILLIS)
   @Path("/ReferenceGenerator")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -25,7 +25,7 @@ public interface CoreServices extends Closeable {
 
   @POST
   @Traced
-  @Timeout(value = 500, unit = ChronoUnit.MILLIS)
+// @Timeout(unit = ChronoUnit.MILLIS)
   @Path("/LockManager")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -33,7 +33,7 @@ public interface CoreServices extends Closeable {
 
   @POST
   @Traced
-  @Timeout(value = 500, unit = ChronoUnit.MILLIS)
+ //@Timeout(unit = ChronoUnit.MILLIS)
   @Path("/ValidateTransactionUniqueness")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -41,7 +41,7 @@ public interface CoreServices extends Closeable {
 
   @POST
   @Traced
-  @Timeout(value = 1000, unit = ChronoUnit.MILLIS)
+// @Timeout(unit = ChronoUnit.MILLIS)
   @Path("/ValidateFinancialTransaction")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -50,7 +50,7 @@ public interface CoreServices extends Closeable {
 
   @POST
   @Traced
-  @Timeout(value = 500, unit = ChronoUnit.MILLIS)
+ //@Timeout(unit = ChronoUnit.MILLIS)
   @Path("/OFSFormatter")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -58,7 +58,7 @@ public interface CoreServices extends Closeable {
 
   @POST
   @Traced
-  @Timeout(value = 1000, unit = ChronoUnit.MILLIS)
+ // @Timeout(unit = ChronoUnit.MILLIS)   
   @Path("/ProcessAndQueueFinancialTransaction")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +66,7 @@ public interface CoreServices extends Closeable {
 
   @POST
   @Traced
-  @Timeout(value = 500, unit = ChronoUnit.MILLIS)
+ //@Timeout(unit = ChronoUnit.MILLIS)
   @Path("/PersistUniqueData")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -74,7 +74,7 @@ public interface CoreServices extends Closeable {
 
   @POST
   @Traced
-  @Timeout(value = 500, unit = ChronoUnit.MILLIS)
+ //@Timeout(unit = ChronoUnit.MILLIS)
   @Path("/ReleaseLockByUniqueReference")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
