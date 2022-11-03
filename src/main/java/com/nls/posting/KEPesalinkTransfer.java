@@ -33,7 +33,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -60,6 +59,8 @@ public class KEPesalinkTransfer {
   private static HashMap<String, String> GlobalParameters;
   private static String coreDBSchema;
   private static String channelSchema;
+  private static CoreServices coreServices;
+  private static PesaLinkCoreService pesaCoreServices;
 
   public static void SetSchemaNames(String coreDBSchema, String channelSchema) {
     KEPesalinkTransfer.coreDBSchema = coreDBSchema;
@@ -78,9 +79,15 @@ public class KEPesalinkTransfer {
     KEPesalinkTransfer.GlobalParameters = GlobalParameters;
   }
 
-  @Inject CoreServices coreServices;
+  public static void setCoreServices(CoreServices coreServices) {
+    KEPesalinkTransfer.coreServices = coreServices;
+  }
 
-  @Inject PesaLinkCoreService pesaCoreServices;
+  public static void setPesaLinkCoreServices(PesaLinkCoreService pesaCoreServices) {
+    KEPesalinkTransfer.pesaCoreServices = pesaCoreServices;
+  }
+
+  // @Inject PesaLinkCoreService pesaCoreServices;
 
   @Timeout(value = 10, unit = ChronoUnit.SECONDS)
   @Counted()

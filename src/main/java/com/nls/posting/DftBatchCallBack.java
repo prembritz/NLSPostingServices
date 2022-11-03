@@ -34,7 +34,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -61,6 +60,9 @@ public class DftBatchCallBack {
   private static String coreDBSchema;
   private static String channelSchema;
 
+  private static CoreServices coreServices;
+  private static PesaLinkCoreService pesaCoreServices;
+
   public static void SetSchemaNames(String coreDBSchema, String channelSchema) {
     DftBatchCallBack.coreDBSchema = coreDBSchema;
     DftBatchCallBack.channelSchema = channelSchema;
@@ -74,9 +76,13 @@ public class DftBatchCallBack {
     DftBatchCallBack.GlobalParameters = GlobalParameters;
   }
 
-  @Inject CoreServices coreServices;
+  public static void setCoreServices(CoreServices coreServices) {
+    DftBatchCallBack.coreServices = coreServices;
+  }
 
-  @Inject PesaLinkCoreService pesaCoreServices;
+  public static void setPesaLinkCoreServices(PesaLinkCoreService pesaCoreServices) {
+    DftBatchCallBack.pesaCoreServices = pesaCoreServices;
+  }
 
   @Timeout(value = 30, unit = ChronoUnit.SECONDS)
   @Counted()

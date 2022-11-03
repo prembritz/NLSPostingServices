@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -61,9 +60,22 @@ public class SalaryBatchCallBack {
   private static String coreDBSchema;
   private static String channelSchema;
   LinkedHashMap<String, String> ErrorResponseMap = null;
-  @Inject CoreServices coreServices;
-  @Inject PesaLinkCoreService pesaCoreServices;
-  @Inject MobileMoneyCoreService moneyCoreService;
+
+  private static CoreServices coreServices;
+  private static PesaLinkCoreService pesaCoreServices;
+  private static MobileMoneyCoreService moneyCoreService;
+
+  public static void setCoreServices(CoreServices coreServices) {
+    SalaryBatchCallBack.coreServices = coreServices;
+  }
+
+  public static void setMobMoneyCoreServices(MobileMoneyCoreService moneyCoreService) {
+    SalaryBatchCallBack.moneyCoreService = moneyCoreService;
+  }
+
+  public static void setPesaLinkCoreServices(PesaLinkCoreService pesaCoreServices) {
+    SalaryBatchCallBack.pesaCoreServices = pesaCoreServices;
+  }
 
   public static void SetSchemaNames(String coreDBSchema, String channelSchema) {
     SalaryBatchCallBack.coreDBSchema = coreDBSchema;

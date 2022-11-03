@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -60,7 +59,11 @@ public class StopChequePayment {
   private static HashMap<String, String> GlobalParameters;
   private static String ChequeRegisterTable = "CHEQUE$REGISTER$SUPPLEMENT";
 
-  @Inject CoreServices coreServices;
+  private static CoreServices coreServices;
+
+  public static void setCoreServices(CoreServices coreServices) {
+    StopChequePayment.coreServices = coreServices;
+  }
 
   public static void setDBPool(DataSource cmDBPool) {
     StopChequePayment.cmDBPool = cmDBPool;

@@ -28,7 +28,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -74,7 +73,11 @@ public class ChequeBook {
     ChequeBook.GlobalParameters = GlobalParameters;
   }
 
-  @Inject CoreServices coreServices;
+  private static CoreServices coreServices;
+
+  public static void setCoreServices(CoreServices coreServices) {
+    ChequeBook.coreServices = coreServices;
+  }
 
   @Timeout(value = 5, unit = ChronoUnit.SECONDS)
   @Counted()

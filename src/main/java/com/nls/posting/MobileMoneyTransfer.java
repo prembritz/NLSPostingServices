@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -58,8 +57,11 @@ public class MobileMoneyTransfer {
   private static String coreDBSchema;
   private static String channelDBSchema;
 
-  @Inject CoreServices coreServices;
+  private static CoreServices coreServices;
 
+  public static void setCoreServices(CoreServices coreServices) {
+    MobileMoneyTransfer.coreServices = coreServices;
+  }
   // @Inject
   // MobileMoneyCoreService moneyCoreService;
 

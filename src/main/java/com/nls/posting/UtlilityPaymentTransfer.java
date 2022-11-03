@@ -30,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -75,7 +74,11 @@ public class UtlilityPaymentTransfer {
     UtlilityPaymentTransfer.GlobalParameters = GlobalParameters;
   }
 
-  @Inject CoreServices coreServices;
+  private static CoreServices coreServices;
+
+  public static void setCoreServices(CoreServices coreServices) {
+    UtlilityPaymentTransfer.coreServices = coreServices;
+  }
 
   @Timeout(value = 5, unit = ChronoUnit.SECONDS)
   @Counted()
@@ -130,7 +133,7 @@ public class UtlilityPaymentTransfer {
       TransId = id.hdrTranId;
       SourceUniqRef = id.reqTransactionReferenceNo;
       String DebitAccountno = id.reqAccountNo;
-      String CreditAccountno = "";
+      String CreditAccountno = id.reqCreditAccountNo;
       String DebitAccountCurrency = id.reqDebitAcCurrency;
       String DebitAmount = id.reqDebitAmount;
       String UnitId = id.reqUnitID;
@@ -350,7 +353,7 @@ public class UtlilityPaymentTransfer {
 
       // OFS Formatting
 
-      CreditAccountno = GlobalParameters.get("UTLILITY_PAYMENT_CREDIT_ACCNO");
+      //  CreditAccountno = GlobalParameters.get("UTLILITY_PAYMENT_CREDIT_ACCNO");
       try {
         if (ValidationStatus.equalsIgnoreCase(ResponseStatus.SUCCESS.getValue())
             || ValidationStatus.equalsIgnoreCase(ResponseStatus.PENDING.getValue())) {
@@ -368,7 +371,7 @@ public class UtlilityPaymentTransfer {
             }
           }
 
-          OFSData.put("CreditAccountNo", CreditAccountno);
+          // OFSData.put("CreditAccountNo", CreditAccountno);
 
           OFSFormatObject OFSFormat =
               coreServices.OFSFormatter(new OFSFormatRequest(ServiceName, OFSData));

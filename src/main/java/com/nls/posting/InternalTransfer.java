@@ -30,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -39,7 +38,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -55,6 +53,7 @@ public class InternalTransfer {
   private static NumberFormat numberFormat = new DecimalFormat("###0.00");
   private static HashMap<String, String> ActualTableName;
   private static HashMap<String, String> GlobalParameters;
+  private static HashMap<String, String> TimeoutParameters;
   private static String coreDBSchema;
   private static String channelSchema;
 
@@ -75,9 +74,14 @@ public class InternalTransfer {
     InternalTransfer.GlobalParameters = GlobalParameters;
   }
 
-  @Inject CoreServices coreServices;
+  //  @Inject CoreServices coreServices;
+  private static CoreServices coreServices;
 
-  @Timeout(value = 5, unit = ChronoUnit.SECONDS)
+  public static void setCoreServices(CoreServices coreServices) {
+    InternalTransfer.coreServices = coreServices;
+  }
+
+  //  @Timeout(value = 5, unit = ChronoUnit.SECONDS)
   @Counted()
   @POST
   @Traced()
@@ -147,12 +151,15 @@ public class InternalTransfer {
       // Reference Generator
 
       try {
+
         ReferenceObject reference =
             coreServices.generateReference(new ReferenceRequest(SourceUniqRef));
+        // System.out.println(ob.getUniqueReference() +"  RESPONSE FROM LCIEJNT");
         UniqueReference = reference.getUniqueReference();
         System.out.println("Unique Reference [" + UniqueReference + "]");
       } catch (Exception e) {
         // TODO: handle exception
+        System.out.println("--------------- catch block");
         e.printStackTrace();
         ResponseMessages(
             IntTransObj,
@@ -171,6 +178,7 @@ public class InternalTransfer {
       // Lock Manager
 
       try {
+
         Locking =
             coreServices.LockingTransactions(
                 new LockTransactionRequest(

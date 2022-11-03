@@ -30,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ForkJoinPool;
-import javax.inject.Inject;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.sql.DataSource;
 import javax.ws.rs.POST;
@@ -59,7 +58,11 @@ public class LoopTransaction {
   private static String coreDBSchema;
   private static String channelDBSchema;
 
-  @Inject CoreServices coreServices;
+  private static CoreServices coreServices;
+
+  public static void setCoreServices(CoreServices coreServices) {
+    LoopTransaction.coreServices = coreServices;
+  }
 
   public static void setDBPool(DataSource cmDBPool) {
     LoopTransaction.cmDBPool = cmDBPool;
