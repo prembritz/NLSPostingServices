@@ -47,7 +47,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponseSchema;
 import org.eclipse.microprofile.opentracing.Traced;
 
-@Path("/UtlilityPayment")
+@Path("/UtilityPaymentTransfer")
 public class UtlilityPaymentTransfer {
 
   private static DataSource cmDBPool;
@@ -138,7 +138,7 @@ public class UtlilityPaymentTransfer {
       String DebitAmount = id.reqDebitAmount;
       String UnitId = id.reqUnitID;
       String channelName = id.reqChannelName;
-      String ServiceName = "UtlilityPaymentTransafer";
+      String ServiceName = "UtilityPaymentTransfer";
       // String Utilitytype = id.Utilitytype;
       String CBXReference = "";
       VIPMarker = id.vipMarker.equalsIgnoreCase(ResponseStatus.Y.getValue()) ? "VIP" : "";
