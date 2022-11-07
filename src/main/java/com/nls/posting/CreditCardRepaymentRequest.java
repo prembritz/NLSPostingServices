@@ -15,6 +15,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
   "debitAccountCurrency",
   "reqDebitAmount",
   "creditCardNumber",
+  "paymentDate",
   "vipMarker",
   "waiveCharge"
 })
@@ -85,4 +86,8 @@ public class CreditCardRepaymentRequest {
   @Schema(required = false, example = "1242827323", description = "req Creditcard Number")
   @JsonbProperty("CreditCardNumber")
   public String creditCardNumber;
+
+  @Schema(required = false, example = "12102022", description = "Payment Date")
+  @JsonbProperty("PaymentDate")
+  public String paymentDate;
 }

@@ -134,6 +134,11 @@ public class UtlilityPaymentTransfer {
       SourceUniqRef = id.reqTransactionReferenceNo;
       String DebitAccountno = id.reqAccountNo;
       String CreditAccountno = id.reqCreditAccountNo;
+      System.out.println(
+          "Utility Credit Account Mapping  ["
+              + GlobalParameters.get("UTILITY-" + id.reqCreditAccountNo)
+              + "]");
+      CreditAccountno = GlobalParameters.get("UTILITY-" + id.reqCreditAccountNo);
       String DebitAccountCurrency = id.reqDebitAcCurrency;
       String DebitAmount = id.reqDebitAmount;
       String UnitId = id.reqUnitID;
